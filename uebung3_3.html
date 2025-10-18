@@ -94,9 +94,24 @@ footer{
 
 @media (max-width: 768px) {
 
+  main{
+    width:100%;
+  }
+  aside{
+    justify-content: center;
+  }
   nav{
     width:100%;
-      grid-template-columns:1fr;
+    flex-direction: column;
+  }
+  nav a{
+    padding: 15px;
+  }
+  .content-area{
+    grid-template-areas:
+        "title title"
+        "aside aside"
+        "main main";
   }
 }
 
