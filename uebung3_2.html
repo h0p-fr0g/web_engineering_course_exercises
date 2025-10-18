@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Übung 3.2</title>
+
+  <style>
+
+    * {
+      margin: 0;
+    }
+
+    body {
+        display: grid;
+        grid-template-areas: 
+            "header"
+            "left"
+            "main"
+            "right";
+        min-height: 100vh;
+    }
+
+    nav {
+        background-color: red;
+        min-height: 80px; 
+        grid-area: header;
+    }
+
+    aside.left {
+      background-color: green;
+      min-height: 50px;
+      grid-area: left;
+    }
+
+    article {
+      background-color: blue;
+      min-height: 200px;
+      grid-area: main;
+    }
+
+    aside.right {
+      background-color: fuchsia; 
+      min-height: 50px;
+      grid-area: right;
+    }
+
+    @media (min-width: 481px) {
+        
+        body {
+
+            grid-template-columns: 30% 70%; 
+            
+            grid-template-areas:
+                "header header" 
+                "left main"
+                "right right";
+        }
+        
+        nav { min-height: 100px; }
+        aside.left, article { min-height: 300px; }
+        aside.right { min-height: 80px; }
+    }
+
+
+    @media (min-width: 769px) {
+
+        body {
+            grid-template-columns: 20% 60% 20%;
+            
+            grid-template-areas:
+                "header header header"
+                "left main right";
+        }
+
+        nav { min-height: 150px; }
+        aside.left, article, aside.right { min-height: 400px; }
+    }
+
+  </style>
+
+</head>
+
+<body>
+    <nav></nav>
+    <aside class="left"></aside>
+    <article></article>
+    <aside class="right"></aside>
+</body>
+</html>

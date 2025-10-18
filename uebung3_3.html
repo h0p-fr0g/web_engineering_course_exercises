@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=yes">
+  <title>Übung 3.3</title>
+
+  <style>
+
+body{
+  display:grid;
+  grid-template-columns: 1fr;
+  margin:0;
+  text-align: center;
+  grid-template-areas: 
+  "nav"
+  "content"
+  "footer";
+  font-family: Arial, sans-serif;
+}
+
+nav{
+  grid-area:nav;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  min-height:50px;
+  background-color: #363636;
+  color: white;
+}
+
+nav a {
+  flex-grow: 1;
+  max-width: 150px;
+}
+
+
+.content-area {
+    grid-area: content; 
+    background-color: #ebeae6; 
+    padding: 40px 20px 60px 20px; 
+    display: grid;
+    grid-template-areas:
+        "title title"
+        "aside main";
+    grid-template-columns: 40% 60%;
+    gap: 20px;
+}
+
+
+h1{
+  grid-area:title;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+}
+aside{
+  grid-area:aside;
+    display: flex;
+  justify-content: flex-end;
+}
+main{
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  padding-top:5%;
+  width: 80%;
+
+}
+
+img{
+
+  max-width:280px;
+}
+
+button{
+  padding: 10px;
+  color: white;
+  background-color: #f88e37;
+  width: 300px;
+  align-self: center;
+  font-weight: bold;
+  border: 0px;
+  border-radius: 5px;
+  margin: 15px;
+}
+
+footer{
+  grid-area:footer;
+  color:white;
+  background-color: #011926;
+  padding: 10px 0;
+}
+
+
+
+@media (max-width: 768px) {
+
+  nav{
+    width:100%;
+      grid-template-columns:1fr;
+  }
+}
+
+
+
+  </style>
+
+</head>
+
+<body>
+
+  
+    <nav>
+      <a>The book series</a>
+      <a>Testimonials</a>
+      <a>The Author</a>
+      <a>Free resources</a>
+    </nav>
+
+    <div class="content-area">
+        <h1>You dont know JavaScript</h1>
+      <aside>
+        <img src="https://kaul.inf.h-brs.de/ccm/we/ws25/resources/assets/landing-img.png" alt="You Don't Know JS - Complete Series Buchcover">
+      </aside>
+      <main>
+        <p>Don't just drift through Javascript.</p>
+        <p>Understand how Javascript works</p>
+        <p>Start your journey through the bumpy side of Javascript</p>
+        <button>ORDER YOUR COPY NOW</button>
+      </main>
+    </div>
+
+    <footer>
+      <p>The first ebook in the book series is absolutely free.</p>
+      <button>FIND OUT MORE ABOUT THIS OFFER</button>
+    </footer>
+
+</body>
+</html>
