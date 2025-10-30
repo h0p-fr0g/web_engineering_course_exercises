@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Übung 4</title>
+
+
+<script>
+
+function topSort(tasks){
+
+  const graph = {};
+  const inDegree = {};
+
+  for (const [from, to] of tasks) {
+    if (!graph[from]) {
+          graph[from] = [];
+    }
+    graph[from].push(to);
+
+    inDegree[from] = inDegree[from] ?? 0;
+    inDegree[to] = (inDegree[to] ?? 0) + 1;
+  }
+
+  const queue = Object.keys(inDegree).filter(node => inDegree[node] === 0);
+
+  const result = [];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+    result.push(node);
+
+    for (const neighbor of graph[node] || []) {
+      inDegree[neighbor]--;
+      if (inDegree[neighbor] === 0) {
+        queue.push(neighbor);
+      }
+    }
+  }
+
+return result;
+
+}
+
+
+
+console.log(topSort([["schlafen","studieren"],["essen","studieren"],["studieren","prüfen"]]));
+
+</script>
+
+</head>
+
+<body>
+
+</body>
+
+</html>

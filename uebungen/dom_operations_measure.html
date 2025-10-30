@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>DOM Operations Measurement</title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const element = document.getElementById('html_element');
+
+            const properties = ['innerHTML', 'innerText', 'textContent', 'outerHTML'];
+                        
+            const results = [];
+
+
+            properties.forEach(prop => {
+                
+                let value;
+                
+                const startTime = performance.now();
+
+                value = element[prop];
+
+                const endTime = performance.now();
+                const duration = endTime - startTime;
+
+                results.push({
+                    'Eigenschaft': prop,
+                    'Dauer für 1 Aufruf (ms)': duration
+                });
+            });
+
+            console.table(results);
+
+
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1 id="html_element">
+        HTML - Element</h1>
+</body>
+
+</html>

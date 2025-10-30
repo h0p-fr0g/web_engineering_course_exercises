@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topologische Sortierung Rechner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .input-info {
+            font-size: 14px;
+            color: #666;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            min-height: 50px;
+        }
+        .result-box h3 {
+            margin-top: 0;
+        }
+    </style>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const sortButton = document.getElementById('sortButton');
+            sortButton.addEventListener('click', sortRelations);
+
+        });
+
+        function sortRelations() {
+            const inputElement = document.getElementById('relationsInput');
+            const outputElement = document.getElementById('resultOutput');
+            const rawInput = inputElement.value.trim();
+
+            if (!rawInput) {
+                outputElement.innerHTML = '<span class="error">Bitte geben Sie die Vorrang-Relationen ein.</span>';
+                return;
+            }
+
+            const lines = rawInput.split(/[\n,]/)
+                                .map(line => line.trim())
+                                .filter(line => line.length > 0);
+            
+            const relations = [];
+
+            const relationPattern = /^\s*([\wäöüÄÖÜß0-9]+)\s*->\s*([\wäöüÄÖÜß0-9]+)\s*$/;
+            for (const line of lines) {
+                const match = line.match(relationPattern);
+                
+                if (match) {
+                    relations.push([match[1].toUpperCase(), match[2].toUpperCase()]);
+                } else {
+                    outputElement.innerHTML = `<span class="error">Fehler beim Parsen der Zeile: "${line}". Ungültiges Format.</span>`;
+                    return; 
+                }
+            }
+
+            // Topologische Sortierung durchführen
+            const sortedList = topSort(relations);
+            if (sortedList === null) {
+                
+                outputElement.innerHTML = '<span class="error">Zyklus im Graphen erkannt! Eine topologische Sortierung ist nicht möglich.</span>';
+            } 
+            else {
+                outputElement.innerHTML = sortedList.join(' -> ');
+            }
+        }
+
+
+
+function topSort(relations) {
+    const graph = {};
+    const inDegree = {};
+    const allNodes = new Set();
+
+    for (const [from, to] of relations) {
+        allNodes.add(from);
+        allNodes.add(to);
+
+        if (!graph[from]) {
+            graph[from] = [];
+        }
+        graph[from].push(to);
+
+        inDegree[from] = inDegree[from] ?? 0;
+        inDegree[to] = (inDegree[to] ?? 0) + 1;
+    }
+
+    for (const node of allNodes) {
+        inDegree[node] = inDegree[node] ?? 0;
+    }
+
+    const queue = Object.keys(inDegree).filter(node => inDegree[node] === 0);
+
+    const result = [];
+
+    while (queue.length > 0) {
+        const node = queue.shift();
+        result.push(node);
+
+        for (const neighbor of graph[node] || []) {
+            inDegree[neighbor]--;
+            if (inDegree[neighbor] === 0) {
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    //Zyklusprüfung: Wenn result.length kleiner ist als die Gesamtzahl der Knoten, gibt es einen Zyklus.
+    if (result.length !== allNodes.size) {
+        return null; // Zyklus erkannt
+    }
+
+    return result;
+}
+
+
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Topologische Sortierung</h1>
+    
+    <label for="relationsInput">Vorrang-Relationen (z.B. A -> B, B -> C, je eine pro Zeile):</label>
+    <textarea id="relationsInput" placeholder="A -> B&#10;B -> C&#10;D -> A" required></textarea>
+    <div class="input-info">
+        Jede Relation gibt an, welche Aufgabe vor einer anderen erledigt werden muss.
+    </div>
+
+    <button id="sortButton">Topologisch Sortieren</button>
+
+    <hr>
+
+    <div class="result-box">
+        <h3>Ergebnis der Sortierung:</h3>
+        <p id="resultOutput"></p>
+    </div>
+</div>
+
+</body>
+</html>

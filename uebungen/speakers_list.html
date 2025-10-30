@@ -1,0 +1,173 @@
+<html>
+<head>
+    <title>Speakers List</title>
+
+    <style>
+        #speakers_list li {
+            margin-bottom: 10px;
+        }
+        
+        .time-display {
+            font-family: monospace;
+            margin: 0 10px;
+
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const inputField = document.getElementById('speaker_name');
+            const addButton = document.getElementById('add_button');
+            const speakersList = document.getElementById('speakers_list');
+            
+            
+            function addSpeaker() {
+
+                const speakerName = inputField.value.trim();
+                if (speakerName === "") return;
+
+                stopAllTimers();
+
+                const li = document.createElement('li');
+                
+                li.dataset.totalMilliseconds = 0;
+
+                const span = document.createElement('span');
+                span.textContent = speakerName;
+
+                const spanTime = document.createElement('span');
+                spanTime.className = 'time-display';
+                spanTime.textContent = '00:00:00';
+
+                const button = document.createElement('button');
+                button.className = 'toggle-button';
+                button.textContent = 'Stopp!';
+
+                li.appendChild(span);
+                li.appendChild(spanTime);
+                li.appendChild(button);
+                speakersList.appendChild(li);
+
+                startTimer(li);
+
+                inputField.value = "";
+                inputField.focus();
+            }
+
+
+            function startTimer(liElement) {
+
+                const button = liElement.querySelector('.toggle-button');
+                const timeDisplay = liElement.querySelector('.time-display');
+                
+                button.textContent = 'Stopp!';
+
+                const startTime = performance.now();
+
+                const accumulatedTime = Number(liElement.dataset.totalMilliseconds);
+
+                const intervalId = setInterval(() => {
+                    const elapsed = performance.now() - startTime;
+                    const currentTotalTime = accumulatedTime + elapsed;
+
+                    timeDisplay.textContent = formatTime(currentTotalTime);
+                }, 100);
+
+                liElement.dataset.startTime = startTime;
+                liElement.dataset.intervalId = intervalId;
+            }
+
+            function stopTimer(liElement) {
+
+                const intervalId = liElement.dataset.intervalId;
+                if (!intervalId) return;
+
+                const button = liElement.querySelector('.toggle-button');
+                const timeDisplay = liElement.querySelector('.time-display');
+
+                clearInterval(intervalId);
+
+                const startTime = Number(liElement.dataset.startTime);
+                const accumulatedTime = Number(liElement.dataset.totalMilliseconds);
+                const elapsed = performance.now() - startTime;
+                
+                const finalTotalTime = accumulatedTime + elapsed;
+                liElement.dataset.totalMilliseconds = finalTotalTime;
+
+                liElement.dataset.intervalId = '';
+                button.textContent = 'Start!';
+                
+                timeDisplay.textContent = formatTime(finalTotalTime);
+            }
+
+            function stopAllTimers() {
+
+                const allListItems = speakersList.querySelectorAll('li');
+                
+                allListItems.forEach(li => {
+                
+                    if (li.dataset.intervalId) {
+                        stopTimer(li);
+                    }
+                });
+            }
+
+            
+            function formatTime(totalMilliseconds) {
+                let totalSeconds = Math.floor(totalMilliseconds / 1000);
+                
+                let hours = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+
+                const pad = (num) => num.toString().padStart(2, '0');
+                
+                return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+            }
+
+
+            // --- EVENT LISTENERS ---
+
+            addButton.addEventListener('click', addSpeaker);
+
+            inputField.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    addSpeaker();
+                }
+            });
+
+            speakersList.addEventListener('click', function(event) {
+
+                if (event.target.classList.contains('toggle-button')) {
+                    
+                    const li = event.target.closest('li'); 
+                    const isRunning = !!li.dataset.intervalId;
+
+                    if (isRunning) {
+                        stopTimer(li);
+                    } else {
+                        stopAllTimers();
+                        startTimer(li);
+                    }
+                }
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1>Rednerliste</h1>
+
+    <label for="speaker_name">Neuer Redner:</label>
+    <input id="speaker_name" type="text">
+    <button id="add_button">Hinzufügen</button>
+
+    <ul id="speakers_list">
+        </ul>
+
+</body>
+</html>
